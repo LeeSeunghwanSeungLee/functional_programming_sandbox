@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>1. 함수형 프로그래밍 개요</title>
+    </head>
+
+    <body>
+        <script>
+            /* 순수함수 */
+            function add(a, b) {
+                return a + b;
+            }
+
+            console.log(add(10, 5));
+
+            var c = 20;
+            function add2(a, b) {
+                return a + b + c; // closure
+            }
+
+            var c = 30;
+            function add3(a, b) {
+                c = b;
+                return a + b;
+            }
+
+            var f1 = (a) => a * a;
+            console.log(f1);
+
+            var f2 = add;
+            console.log(f2);
+
+            /* add maker*/
+            function add_maker(a) {
+                return function(b) {
+                    return a + b;
+                }
+            }
+
+            var add5 = add_maker(10);
+            console.log(add_maker(30)); // 40, closure
+
+        </script>
+    </body>
+</html>
