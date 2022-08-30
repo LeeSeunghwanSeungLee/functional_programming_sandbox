@@ -31,7 +31,7 @@ function _curry(fn) {
   }
   
   function _is_object(obj) {
-    return typeof obj == 'object' && !!obj;
+    return typeof obj == 'object' && !!obj; // typeof null == 'object' 이기 때문에 !!obj를 적용한다.
   }
   
   function _keys(obj) {
