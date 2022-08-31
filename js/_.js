@@ -82,11 +82,20 @@ var _map = _curryr(_map);
 
 var _pairs = _map(function (val, key) { return [key, val]; });
 
+/**
+ * collection 타입에서 slicing을 적용하기 위한 함수
+ */
 var slice = Array.prototype.slice;
 function _rest(list, num) {
   return slice.call(list, num || 1); // if !(num) return 1;
 }
   
+/**
+ * @param {*} list : 전체 list
+ * @param {*} iter : memo에 적용하고 싶은 함수 (ex. 더하거나, 리스트에경우 push하거나...)
+ * @param {*} memo : 시작 list
+ * @returns 
+ */
 function _reduce(list, iter, memo) {
   if (arguments.length == 2) {
     memo = list[0];
@@ -98,41 +107,62 @@ function _reduce(list, iter, memo) {
   return memo;
 }
   
-  function _pipe() {
-    var fns = arguments;
-    return function(arg) {
-      return _reduce(fns, function(arg, fn) {
-        return fn(arg);
-      }, arg);
-    }
+/**
+ * 여러 함수가 들어있는 리스트를 순차적으로 적용하는 함수
+ */
+function _pipe() {
+  var fns = arguments;
+  return function(arg) {
+    return _reduce(fns, function(arg, fn) {
+      return fn(arg);
+    }, arg);
   }
+}
   
-  function _go(arg) {
-    var fns = _rest(arguments);
-    return _pipe.apply(null, fns)(arg);
+/**
+ * pipe를 즉시 실행할 수 있는 함수
+ */
+function _go(arg) {
+  var fns = _rest(arguments);
+  return _pipe.apply(null, fns)(arg);
+}
+  
+var _values = _map(_identity);
+
+/**
+ * 순수함수로써 활용하기 위해 굳이 만든 함수, 의외로 많이 사용된다고 한다.
+ */
+function _identity(val) {
+  return val;
+}
+  
+/**
+ * map을 적용하기 위한 함수, key값을 전부 꺼내준다. 굳이 있을 필요가 있을지 궁금하긴함
+ */
+var _pluck = _curryr(function(data, key) {
+  return _map(data, _get(key));
+});
+  
+/**
+ * 필터 과정에서 not 연산을 적용하기 위한 함수
+ */
+function _negate(func) {
+  return function(val) {
+    return !func(val);
   }
+}
   
-  var _values = _map(_identity);
+/**
+ * data를 입력받아서 filter에 반하는 결과값들을 리턴하기 위함, filter로 대체할 수 있는 함수
+ */
+var _reject = _curryr(function(data, predi) {
+  return _filter(data, _negate(predi));
+});
   
-  function _identity(val) {
-    return val;
-  }
-  
-  var _pluck = _curryr(function(data, key) {
-    return _map(data, _get(key));
-  });
-  
-  function _negate(func) {
-    return function(val) {
-      return !func(val);
-    }
-  }
-  
-  var _reject = _curryr(function(data, predi) {
-    return _filter(data, _negate(predi));
-  });
-  
-  var _compact = _filter(_identity);
+/**
+ * if 문에 걸려서 truty에 해당하는 값만 리턴하게 해줄 수 있는 함수를 compact라고 함
+ */
+var _compact = _filter(_identity);
   
   var _find = _curryr(function(list, predi) {
     var keys = _keys(list);
