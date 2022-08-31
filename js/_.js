@@ -1,26 +1,37 @@
+/**
+ * _curry(function(a) {}) : 파라미터가 한개인 경우, 커링을 통해 b를 입력받아 실행할 수 있는 고차 함수를 리턴
+ * _curry(function(a, b) {}) : 파라미터가 2개인 경우 즉시 실행
+ */
 function _curry(fn) {
     return function(a, b) {
       return arguments.length == 2 ? fn(a, b) : function(b) { return fn(a, b); };
     }
   }
   
-  function _curryr(fn) {
-    return function(a, b) {
-      return arguments.length == 2 ? fn(a, b) : function(b) { return fn(b, a); };
-    }
+/**
+ * _curry(fn) 과 유사한 기능, 파라미터 입력 순서가 reverse 되어있다는 것이 차이점
+ */
+function _curryr(fn) {
+  return function(a, b) {
+    return arguments.length == 2 ? fn(a, b) : function(b) { return fn(b, a); };
   }
+}
   
-  var _get = _curryr(function(obj, key) {
-    return obj == null ? undefined : obj[key];
+/**
+ * _get(key)(obj) 로 실행하는 함수 표현식
+ */
+var _get = _curryr(function(obj, key) {
+  return obj == null ? undefined : obj[key];
+});
+  
+
+function _filter(list, predi) {
+  var new_list = [];
+  _each(list, function(val) {
+    if (predi(val)) new_list.push(val);
   });
-  
-  function _filter(list, predi) {
-    var new_list = [];
-    _each(list, function(val) {
-      if (predi(val)) new_list.push(val);
-    });
-    return new_list;
-  }
+  return new_list;
+}
   
   function _map(list, mapper) {
     var new_list = [];
